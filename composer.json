@@ -1,0 +1,23 @@
+{
+  "name" : "cl/team",
+  "description": "CourseLib website base Site component.",
+  "type" : "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Charles B. Owen",
+      "email": "cbowen@msu.edu"
+    }
+  ],
+  "autoload":{
+    "psr-4": {
+      "CL\\Team\\": "src/Team"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/charles-owen/team-cl.git"
+    }
+  ]
+}

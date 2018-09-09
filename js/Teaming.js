@@ -12,4 +12,7 @@ export const Teaming = function(data) {
 		this.public = true;
 	}
 
+	this.clone = function() {
+		return new Teaming(this);
+	}
 }

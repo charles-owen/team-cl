@@ -8,6 +8,15 @@ namespace CL\Team;
 
 use CL\Site\MetaData;
 
+/**
+ * Representation of a single Teaming (collection of teams)
+ *
+ * @cond
+ * @property int $id
+ * @property string $semester
+ * @property string $sectionId
+ * @endcond
+ */
 class Teaming {
 
 	public function __construct(array $row = null) {

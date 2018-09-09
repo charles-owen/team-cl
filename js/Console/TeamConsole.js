@@ -1,5 +1,6 @@
 import {Member} from "course-cl";
 import TeamingsEditorVue from './TeamingsEditor.vue';
+import TeamsEditorVue from './TeamsEditor.vue';
 
 /**
  * @file
@@ -29,6 +30,10 @@ TeamConsole.setup = function(Console) {
 			{route: '/teams', component: TeamingsEditorVue}
 		]
 	});
+
+	Console.components.addRoutes([
+		{route: '/team/:id', component: TeamsEditorVue, props: true}
+	]);
 
 }
 

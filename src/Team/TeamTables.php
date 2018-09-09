@@ -21,5 +21,7 @@ class TeamTables extends \CL\Tables\TableMaker {
 		parent::__construct($config);
 
 		$this->add(new Teamings($config));
+		$this->add(new Teams($config));
+		$this->add(new TeamMembers($config));
 	}
 }

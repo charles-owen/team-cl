@@ -1,9 +1,11 @@
 <template>
   <div class="cl-teaming-editor">
     <div>
-      <p><label>Tag<br><input type="text" v-model="teaming.tag"></label></p>
-      <p><label>Name<br><input type="text" v-model="teaming.name"></label></p>
-      <p class="center"><label><input type="checkbox" v-model="teaming.public"> Public</label></p>
+      <form>
+        <p><label>Tag<br><input ref="tag" type="text" v-model="teaming.tag"></label></p>
+        <p><label>Name<br><input type="text" v-model="teaming.name"></label></p>
+        <p class="center"><label><input type="checkbox" v-model="teaming.public"> Public</label></p>
+      </form>
     </div>
   </div>
 </template>
@@ -13,7 +15,7 @@
   export default {
   	props: ['teaming'],
   	mounted() {
-  		console.log(this.teaming);
+  		this.$refs['tag'].focus();
     }
   }
 </script>

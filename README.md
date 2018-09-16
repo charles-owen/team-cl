@@ -5,9 +5,9 @@
 
 ## License
 
-Copyright 2016-2018 Michigan State University
+Copyright 2012-2018 Michigan State University
 
-Cirsim is released under the MIT license.
+CourseLib is released under the MIT license.
 
 * * *
 

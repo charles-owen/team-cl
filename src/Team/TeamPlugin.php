@@ -57,6 +57,16 @@ class TeamPlugin extends \CL\Site\Plugin {
 		if($object instanceof Router) {
 			$router = $object;
 
+			$router->addRoute(['team', 'submission', 'download', ':id'], function(Site $site, Server $server, array $params, array $properties, $time) {
+				$view = new Submission\TeamSubmissionDownloadView($site, $server, $properties);
+				return $view->whole();
+			});
+
+			$router->addRoute(['team', 'submission', 'view', ':id'], function(Site $site, Server $server, array $params, array $properties, $time) {
+				$view = new Submission\TeamSubmissionImageView($site, $server, $properties);
+				return $view->whole();
+			});
+
 			$router->addRoute(['api', 'team', '*'], function(Site $site, Server $server, array $params, array $properties, $time) {
 				$resource = new TeamApi();
 				return $resource->apiDispatch($site, $server, $params, $properties, $time);

@@ -41,6 +41,12 @@ SQL;
 		return $query;
 	}
 
+	/**
+	 * Add a new team
+	 * @param int $teamingId The teaming ID
+	 * @param string $name New team name
+	 * @return Team object
+	 */
 	public function add($teamingId, $name) {
 		$sql = <<<SQL
 insert into $this->tablename(teamingid, name)
@@ -52,10 +58,14 @@ SQL;
 		// echo $this->sub_sql($sql, $exec);
 		$stmt->execute($exec);
 
-		return $this->pdo->lastInsertId();
+		return new Team(['id'=>$this->pdo->lastInsertId(), 'teamingid'=>$teamingId, 'name'=>$name]);
 	}
 
-
+	/**
+	 * Delete a deam
+	 * @param int $teamId Team ID
+	 * @return bool true if successful
+	 */
 	public function delete($teamId) {
 		$sql = <<<SQL
 delete from $this->tablename
@@ -68,6 +78,12 @@ SQL;
 		return $stmt->execute($exec);
 	}
 
+	/**
+	 * Update a team
+	 * @param int $teamId Team ID
+	 * @param string $name New name
+	 * @return bool true if successful
+	 */
 	public function update($teamId, $name) {
 		$sql = <<<SQL
 update $this->tablename
@@ -131,6 +147,11 @@ SQL;
 		return $stmt->execute($exec);
 	}
 
+	/**
+	 * Get all teams for a teaming sorted in natural order
+	 * @param $teamingId
+	 * @return array of Team objects
+	 */
 	public function getTeams($teamingId) {
 
 		$sql = <<<SQL
@@ -147,7 +168,7 @@ SQL;
 		$teamNames = [];
 		while(($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
 			$team = new Team($row);
-			$teams[$team->id] = new Team($row);
+			$teams[$team->id] = $team;
 			$teamNames[$team->id] = $team->name;
 		}
 

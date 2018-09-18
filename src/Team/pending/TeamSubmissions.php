@@ -25,7 +25,7 @@ class TeamSubmissions extends \Assignments\SubmissionsBase {
 	 * @param $submission The actual submission object
 	 * @param $date Submission date as PHP time value
 	 * @param $text The text to submit
-	 * @returns ID for the new submission or false if fail */
+	 * @return ID for the new submission or false if fail */
 	public function submit_text($teamId, \User $user, \Assignments\Submission $submission,
 								$date, $text) {
 

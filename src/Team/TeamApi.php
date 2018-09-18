@@ -12,6 +12,7 @@ use CL\Site\Api\APIException;
 use CL\Users\User;
 use CL\Course\Members;
 use CL\Course\Member;
+use CL\Team\Submission\TeamSubmissionApi;
 
 /**
  * API Resource for /api/team
@@ -39,6 +40,12 @@ class TeamApi extends \CL\Users\Api\Resource {
 		$user = $this->isUser($site, User::USER);
 
 		switch($params[0]) {
+			case 'submission':
+				$api = new TeamSubmissionApi();
+				$params2 = $params;
+				array_shift($params2);
+				return $api->dispatch($site, $server, $params2, $properties, $time);
+
 			// /api/team/teamings
 			// /api/team/teamings/new
 			// /api/team/teamings/update
@@ -128,7 +135,7 @@ class TeamApi extends \CL\Users\Api\Resource {
 		$teams = $teamsTable->getTeams($teamingId);
 
 		// Add unaffiliated team
-		$teams[0] = new Team(['id'=>0, 'name'=>null]);
+		$teams[0] = new Team(['id'=>0, 'name'=>null, 'teamingid'=>0]);
 
 		//
 		// Get the members

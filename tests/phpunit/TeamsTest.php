@@ -49,12 +49,31 @@ class TeamingsTest extends TeamDatabaseTestBase {
 		$t = $teams->getTeams($teamingId);
 		$this->assertCount(0, $t);  // Just unaffiliated right now
 
-		$teams->addTeam($teamingId, 'Team 1');
+		$team = $teams->add($teamingId, 'Team 1');
 
 		$t = $teams->getTeams($teamingId);
 		$this->assertCount(1, $t);  // Just unaffiliated right now
 
+		// We now have the teaming 'project1'
+		// with one team 'Team 1' in it.
+
+		// Add some members to the team
+		$members = new Members($this->site->db);
+		$user22 = $members->getAsUser(22);
+		$user40 = $members->getAsUser(40);
+		$user47 = $members->getAsUser(47);
+
+		$teamMembers = new TeamMembers($this->site->db);
+		$teamMembers->add($user22->member->id, $team->id);
+		$teamMembers->add($user40->member->id, $team->id);
+		$teamMembers->add($user47->member->id, $team->id);
+
+		$userTeam = $teamings->getTeamByMember($user22, 'project1');
+		$this->assertEquals('Team 1', $userTeam->name);
+		print_r($userTeam);
+
 	}
+
 
 
 }

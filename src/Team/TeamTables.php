@@ -23,5 +23,6 @@ class TeamTables extends \CL\Tables\TableMaker {
 		$this->add(new Teamings($config));
 		$this->add(new Teams($config));
 		$this->add(new TeamMembers($config));
+		$this->add(new Submission\TeamSubmissions($config));
 	}
 }

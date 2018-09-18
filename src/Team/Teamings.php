@@ -5,6 +5,9 @@
  
 namespace CL\Team;
 
+use \CL\Users\User;
+
+
 /**
  * Model the collection of all teams (the teaming table)
  */
@@ -196,79 +199,61 @@ SQL;
 		}
 	}
 
+	/**
+	 * Get the team for a given user
+	 * @param User $user User we are getting the team for
+	 * @param string $teamingTag The teaming tag
+	 * @param $memberId
+	 * @return Team|null
+	 */
+	public function getTeamByMember(User $user, $teamingTag) {
+		$teams = new Teams($this->config);
+		$teamMembers = new TeamMembers($this->config);
 
-//
-//	/** Get team records
-//	 *
-//	 * This version works based on a join of the three
-//	 * tables and will return fields from all three tables.
-//	 * Seach can be by arbitrary options
-//	 * @param $where Array of key/value pairs we can test by
-//	 * @param $order Optional ordering parameter for results */
-//	public function get_teams($where, $order=null) {
-//		$pdo = $this->pdo();
-//
-//		$teams = new Teams($this->course);
-//		$teamMembersTable = new TeamMembers($this->course);
-//
-//		$sql = <<<SQL
-//select teamingid, tag, $this->tablename.name as teamingname, section, semester,  $teams->tablename.name as teamname, teamid, userid from $this->tablename
-//inner join $teams->tablename on $this->tablename.id = teamingid
-//inner join $teamMembersTable->tablename on $teams->tablename.id = teamid
-//SQL;
-//
-//		$first = true;
-//		$a = array();
-//		foreach($where as $key => $value) {
-//			if($first) {
-//				$sql .= " where $key=?";
-//				$first = false;
-//			} else {
-//				$sql .= " and $key=?";
-//			}
-//
-//			$a[] = $value;
-//		}
-//
-//		if($order !== null) {
-//			$sql .= ' order by ' . $order;
-//		}
-//
-//		//echo $this->sub_sql($sql, $a);
-//
-//		$stmt = $pdo->prepare($sql);
-//		$stmt->execute($a);
-//
-//		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-//	}
-//
+		$pdo = $this->pdo();
+
+		$sql = <<<SQL
+select team.id as id, team.teamingid as teamingid, team.name as name
+from $this->tablename teaming
+join $teams->tablename team
+on teaming.id=team.teamingid
+join $teamMembers->tablename teammember
+on team.id = teammember.teamid
+where semester=? and section=? and teaming.tag=? and memberid=?
+order by name
+SQL;
+
+		$stmt = $pdo->prepare($sql);
+		$member = $user->member;
+		$stmt->execute([$member->semester, $member->sectionId, $teamingTag, $member->id]);
+
+		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+		if($row) {
+			return new Team($row);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get all submissions for a team member.
+	 * @param User $user User we are getting for
+	 * @param string $teamingTag Teaming name
+	 * @param string $assignTag Assignment tag
+	 * @param string $submissionTag Submission tag
+	 * @return array
+	 */
+	public function get_submissions(User $user, $teamingTag, $assignTag, $submissionTag) {
+		$team = $this->getTeamByMember($user, $teamingTag);
+		if($team === null) {
+			return [];
+		}
+
+		$submissions = new Submission\TeamSubmissions($this->config);
+		return $submissions->get_submissions($team->id, $assignTag, $submissionTag);
+	}
 
 
-//
-//	/** Delete a teaming
-//	 * @param $id ID for the record
-//	 * @returns true if successful, false otherwise */
-//	public function delete($id) {
-//		// Delete any teams for this teaming
-//		$teams = new Teams($this->course);
-//		$teams->delete_by_teaming($id);
-//
-//		$pdo = $this->pdo();
-//
-//		$sql = <<<SQL
-//delete from $this->tablename
-//where id=?
-//SQL;
-//
-//		try {
-//			$stmt = $pdo->prepare($sql);
-//			$stmt->execute(array($id));
-//			return true;
-//		} catch(\PDOException $e) {
-//			return false;
-//		}
-//
-//	}
 //
 //	/** Duplicate a teaming
 //	 * @param $id ID for the teaming record

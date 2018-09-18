@@ -15,6 +15,9 @@ use CL\Site\MetaData;
  * @property int $id
  * @property string $semester
  * @property string $sectionId
+ * @property string $tag
+ * @property string $name
+ * @property bool $public
  * @endcond
  */
 class Teaming {

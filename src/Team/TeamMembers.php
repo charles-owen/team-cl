@@ -78,6 +78,26 @@ SQL;
 	}
 
 	/**
+	 * Is this member in this team?
+	 * @param int $teamId
+	 * @param int $memberId
+	 * @return bool
+	 */
+	public function isMember($teamId, $memberId) {
+		$sql = <<<SQL
+select * from $this->tablename
+where teamid=? and memberid=?
+SQL;
+
+		$stmt = $this->pdo->prepare($sql);
+		$exec = [$teamId, $memberId];
+		// echo $this->sub_sql($sql, $exec);
+		$stmt->execute($exec);
+		return $stmt->rowCount() > 0;
+	}
+
+
+	/**
 	 * Get all team members and their team ID for a given teaming.
 	 * @param Teaming $teaming Teaming we are loading
 	 * @return array Array fo

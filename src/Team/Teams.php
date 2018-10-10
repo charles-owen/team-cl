@@ -184,4 +184,29 @@ SQL;
 
 		return $ret;
 	}
+
+
+	/**
+	 * Get a single team
+	 * @param int $teamId
+	 * @return Team object
+	 */
+	public function get($teamId) {
+
+		$sql = <<<SQL
+select * from $this->tablename
+where id=?
+SQL;
+
+		$stmt = $this->pdo->prepare($sql);
+		$exec = [$teamId];
+		// echo $this->sub_sql($sql, $exec);
+		$stmt->execute($exec);
+
+		if($stmt && ($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
+			return new Team($row);
+		}
+
+		return null;
+	}
 }

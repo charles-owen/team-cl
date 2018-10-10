@@ -141,4 +141,35 @@ SQL;
 
 		return $teams;
 	}
+
+	/**
+	 * Get all team members.
+	 * @param Team $team Team we are getting
+	 * @return Team loads members into this team object.
+	 */
+	public function getTeamMembers(Team $team) {
+		$members = new Members($this->config);
+		$sql = $members->memberUserJoinSQL(null, false, 'user_', 'member_');
+
+		$sql .= <<<SQL
+join $this->tablename teammember
+on member.id=teammember.memberid
+where teammember.teamid = ? and member.role = ?
+order by user.name, user.id
+SQL;
+
+		$stmt = $this->pdo->prepare($sql);
+		$exec = [$team->id, Member::STUDENT];
+		// echo $this->sub_sql($sql, $exec);
+		$stmt->execute($exec);
+
+		$team->clearMembers();
+		while(($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
+			$user = new User($row, 'user_');
+			$user->member = new Member($row, 'member_');
+			$team->addMember($user);
+		}
+
+		return $team;
+	}
 }

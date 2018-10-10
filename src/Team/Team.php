@@ -7,6 +7,7 @@
 namespace CL\Team;
 
 use CL\Users\User;
+use CL\Site\Site;
 
 /**
  * Representation of a single team
@@ -52,6 +53,12 @@ class Team {
 			case 'name':
 				return $this->name;
 
+			case 'teamingId':
+				return $this->teamingId;
+
+			case 'members':
+				return $this->members;
+
 			default:
 				$trace = debug_backtrace();
 				trigger_error(
@@ -64,11 +71,46 @@ class Team {
 	}
 
 	/**
+	 * Clear the membership of this team object.
+	 * Usually called prior to loading new members using addMember.
+	 */
+	public function clearMembers() {
+		$this->members = [];
+	}
+
+	/**
 	 * Add a member to this team
 	 * @param User $member
 	 */
 	public function addMember(User $member) {
 		$this->members[] = $member;
+	}
+
+	/**
+	 * Construct an email link for a team
+	 *
+	 * Call this function with results from get_members()
+	 * @param string $class Optional class to add to the a tag.
+	 * @return string HTML link
+	 */
+	public function email_link(Site $site, $class=null) {
+		$email = '';
+		if(count($this->members) > 0) {
+			foreach($this->members as $user) {
+				if ($email !== '') {
+					$email .= ";";
+				}
+
+				$email .= $user->email;
+			}
+
+			$subject = $site->siteName . ' Team ' . $this->name;
+			$classAttr = $class === null ? '' : ' class="' . $class . '"';
+			$email = '<a' . $classAttr . ' href="mailto:' . $email .
+				'&subject=' . rawurlencode($subject) . '" title="Email Team">email</a>';
+		}
+
+		return $email;
 	}
 
 	/**

@@ -15,7 +15,7 @@
               </cl-menu>
               <a @click.prevent="toggle(team)"><img :src="$site.root + '/vendor/cl/site/img/' + (open[team.id] === true ? 'minus.png' : 'plus.png')"></a>
             </th>
-            <th colspan="2">{{team.name !== null ? team.name : 'Unassigned'}}</th>
+            <th colspan="2" v-html="teamHeading(team)"></th>
             <th class="center">{{team.members.length}}</th>
           </tr>
           <template v-if="open[team.id] === true">
@@ -31,7 +31,7 @@
                   </ul>
                 </cl-menu>
               </td>
-              <td>{{member.user}}</td>
+              <td><a :href="'mailto:' + member.email">{{member.user}}</a></td>
               <td>{{member.name}}</td>
               <td></td>
             </tr>
@@ -98,6 +98,10 @@
 	      this.addNav2('Load Names', 6, () => {
 		      this.loadNames();
 	      });
+
+	      this.addNav2('Expand All', 7, () => {
+	      	this.expandAll();
+        });
 
 	      this.$site.api.get('/api/team/teams/' + this.id, {})
 	          .then((response) => {
@@ -232,6 +236,29 @@
 		        buttons: false,
 		        parent: this
 	        });
+        },
+        expandAll() {
+	    		for(let team of this.teams) {
+	    			this.$set(this.open, team.id, true);
+          }
+        },
+        teamHeading(team) {
+	    		if(team.name === null) {
+	    			return 'Unassigned';
+          }
+
+	        let html = team.name;
+
+	    		let email = '';
+	    		for(let member of team.members) {
+	    			if(email !== '') {
+	    				email += ';';
+            }
+
+            email += member.email;
+          }
+
+	    		return `${team.name} <a class="cl-email" href="mailto:${email}">email</a>`;
         }
       }
   }
@@ -251,7 +278,18 @@
     td:nth-child(3) {
       min-width: 10em;
     }
+
+
+    a.cl-email {
+      float: right;
+      font-weight: normal;
+      font-size: 0.85em;
+      display: inline-block;
+      padding-right: 1em;
+      font-style: italic;
+    }
   }
+
 
   div.cl-teams-editor-dlg {
     min-height: 400px;

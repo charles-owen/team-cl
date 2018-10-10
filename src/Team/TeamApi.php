@@ -241,10 +241,10 @@ class TeamApi extends \CL\Users\Api\Resource {
 				}
 			}
 
-			$teamId = $teamsTable->add($teaming->id, 'Team ' . $teamNum);
+			$team = $teamsTable->add($teaming->id, 'Team ' . $teamNum);
 			for($j=0; $j<$size && ($i+$j) < count($unaffiliated);  $j++) {
 				$user = $unaffiliated[$i+$j];
-				$teamsTable->move($teaming->id, $user->member->id, $teamId);
+				$teamsTable->move($teaming->id, $user->member->id, $team->id);
 			}
 
 		}

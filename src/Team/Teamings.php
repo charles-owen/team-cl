@@ -206,7 +206,7 @@ SQL;
 	 * @param $memberId
 	 * @return Team|null
 	 */
-	public function getTeamByMember(User $user, $teamingTag) {
+	public function getTeamByMember(User $user, $teamingTag, $getMembers = false) {
 		$teams = new Teams($this->config);
 		$teamMembers = new TeamMembers($this->config);
 
@@ -229,7 +229,11 @@ SQL;
 
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if($row) {
-			return new Team($row);
+			$team = new Team($row);
+			if($getMembers) {
+				$teamMembers->getTeamMembers($team);
+			}
+			return $team;
 		}
 
 		return null;

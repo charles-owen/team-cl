@@ -12,7 +12,6 @@
   "devDependencies": {
   },
   "dependencies": {
-    "site-cl": ">=0.0.1",
-    "users-cl": ">=0.0.1"
+    "course-cl": ">=0.0.1"
   }
 }

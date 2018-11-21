@@ -1,4 +1,8 @@
-
+/**
+ * Object the represents a teaming
+ * @param data
+ * @constructor
+ */
 export const Teaming = function(data) {
 	if(data !== undefined) {
 		this.id = data.id;

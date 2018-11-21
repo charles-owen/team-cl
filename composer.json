@@ -1,6 +1,6 @@
 {
   "name" : "cl/team",
-  "description": "CourseLib website team components.",
+  "description": "CourseLib site team components.",
   "type" : "library",
   "license": "MIT",
   "authors": [

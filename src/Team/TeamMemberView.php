@@ -77,21 +77,6 @@ class TeamMemberView extends \CL\Site\ViewAux {
 		}
 
 		return [];
-
-//		$section = $this->view->section;
-//
-//		$where = ['userid' => $this->user->member->id];
-//
-//		if($this->teamingTag !== null) {
-//			$where['tag'] = $this->teamingTag;
-//		}
-//
-//		if($public !== null) {
-//			$where['public'] = $public ? 1 : 0;
-//		}
-//
-//		$teams = $teamings->get_teams($where, 'teamingname, teamname');
-//		return $teams;
 	}
 
 	public function get_team() {
@@ -257,21 +242,15 @@ class TeamMemberView extends \CL\Site\ViewAux {
 
 
 
-
-
-//	public function present_team_by_id($teamId) {
-//		$teams = new Teams($this->course);
-//		$teamName = $teams->get_by_id($teamId);
-//
-//		return $this->present_team($teamName);
-//	}
-
 	/**
 	 * Present a single team, given the team structure
 	 * @param Team $team Team object to present
+	 * @param bool $emailNotice If true include a notice about email links
+	 * @param string $link URL for a team page to link the team name to
+	 * @param string $assignTag It supplied, add link to grading page for this assignment for each user.
 	 * @return string HTML
 	 */
-	public function present_team(Team $team, $emailNotice = true, $link=null) {
+	public function present_team(Team $team, $emailNotice = true, $link=null, $assignTag=null) {
 		$teamings = new Teamings($this->site->db);
 		$teaming = $teamings->getById($team->teamingId);
 
@@ -286,6 +265,9 @@ class TeamMemberView extends \CL\Site\ViewAux {
 	<div class="left">	
 HTML;
 
+		//
+		// Team name
+		//
 		if($link !== null) {
 			$html .= <<<HTML
 <h4 class="center"><a href="$link?teaming=$teamingTag&team=$teamId">$teamingname Team: $teamname</a></h4>
@@ -296,22 +278,37 @@ HTML;
 HTML;
 		}
 
+		//
+		// Email notice
+		//
 		if($emailNotice) {
 			$html .= <<<HTML
 <p class="rightbox secondb">The email links are mailto: links for the team members or the entire team.</p>
 HTML;
 		}
 
+		//
+		// Team members
+		//
 		$html .= <<<HTML
 <table class="small wide">
 <tr><th>Name</th><th>User ID</th><th>$email</th></tr>
 HTML;
 
 		foreach($team->members as $member) {
-			$name = $member->displayName;
 			$userid = $member->userId;
 			$email = $member->email;
 			$subject = rawurlencode($this->site->siteName . ' Team ' . $teamname);
+
+			if($assignTag !== null) {
+				$url = $this->site->root . '/cl/console/grading/' . $assignTag . '/' . $member->id;
+				$name = <<<HTML
+<a href="$url" target="grading">$member->displayName</a>
+HTML;
+			} else {
+				$name = $member->displayName;
+			}
+
 			$html .= <<<HTML
 <tr><td>$name</td><td>$userid</td>
 <td><a href="mailto:$email&subject=$subject" title="Email Team Member">$email</a></td></tr>

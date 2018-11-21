@@ -76,16 +76,15 @@
   			new Dialog({
             title: 'New Teaming',
             content: '<div id="cl-teaming"></div>',
+    		    addClass: 'cl-dialog-narrow',
             buttons: [
                 {
                 	  contents: 'Add',
                     focus: true,
                     click: (dialog) => {
-                	  	if(teaming.tag.trim() === '') {
-                        new Dialog.MessageBox('Must enter valid tag', 'You must provide a valid non-empty tag',
-                          Dialog.MessageBox.OK);
-                        return;
-                      }
+	                    if(!this.$site.Tags.validate(teaming.tag)) {
+		                    return;
+	                    }
 
 	                    if(teaming.name.trim() === '') {
 		                    new Dialog.MessageBox('Must enter name', 'You must provide a non-empty name',
@@ -145,16 +144,15 @@
 	      new Dialog({
 		      title: 'Edit Teaming',
 		      content: '<div id="cl-teaming"></div>',
+	        addClass: 'cl-dialog-narrow',
 		      buttons: [
 			      {
 				      contents: 'Update',
 				      focus: true,
 				      click: (dialog) => {
-					      if(teaming.tag.trim() === '') {
-						      new Dialog.MessageBox('Must enter valid tag', 'You must provide a valid non-empty tag',
-							      Dialog.MessageBox.OK);
-						      return;
-					      }
+                if(!this.$site.Tags.validate(teaming.tag)) {
+                  return;
+                }
 
 					      if(teaming.name.trim() === '') {
 						      new Dialog.MessageBox('Must enter name', 'You must provide a non-empty name',

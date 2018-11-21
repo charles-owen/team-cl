@@ -200,12 +200,12 @@ SQL;
 	}
 
 	/**
-	 * Get the team for a given user
-	 * @param User $user User we are getting the team for
-	 * @param string $teamingTag The teaming tag
-	 * @param $memberId
-	 * @return Team|null
-	 */
+ * Get the team for a given user
+ * @param User $user User we are getting the team for
+ * @param string $teamingTag The teaming tag
+ * @param $memberId
+ * @return Team|null
+ */
 	public function getTeamByMember(User $user, $teamingTag, $getMembers = false) {
 		$teams = new Teams($this->config);
 		$teamMembers = new TeamMembers($this->config);
@@ -226,6 +226,45 @@ SQL;
 		$stmt = $pdo->prepare($sql);
 		$member = $user->member;
 		$stmt->execute([$member->semester, $member->sectionId, $teamingTag, $member->id]);
+
+		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+		if($row) {
+			$team = new Team($row);
+			if($getMembers) {
+				$teamMembers->getTeamMembers($team);
+			}
+			return $team;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the team for a given user
+	 * @param User $user User we are getting the team for
+	 * @param string $teamingId The teaming ID
+	 * @return Team|null
+	 */
+	public function getTeamByMember2(User $user, $teamingId, $getMembers = false) {
+		$teams = new Teams($this->config);
+		$teamMembers = new TeamMembers($this->config);
+
+		$pdo = $this->pdo();
+
+		$sql = <<<SQL
+select team.id as id, team.teamingid as teamingid, team.name as name
+from $this->tablename teaming
+join $teams->tablename team
+on teaming.id=team.teamingid
+join $teamMembers->tablename teammember
+on team.id = teammember.teamid
+where semester=? and section=? and teaming.id=? and memberid=?
+order by name
+SQL;
+
+		$stmt = $pdo->prepare($sql);
+		$member = $user->member;
+		$stmt->execute([$member->semester, $member->sectionId, $teamingId, $member->id]);
 
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if($row) {

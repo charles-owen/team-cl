@@ -2,6 +2,10 @@
 
 ***This is a work in progress***
 
+The CourseLib Team component adds support for teams of students
+to a CourseLib website. A teaming is a collection of teams. A
+team is a collection of students.
+
 
 ## License
 

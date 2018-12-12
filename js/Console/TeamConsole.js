@@ -1,4 +1,4 @@
-import {Member} from "course-cl";
+import {Member} from "course-cl/js/Members/Member";
 import TeamingsEditorVue from './TeamingsEditor.vue';
 import TeamsEditorVue from './TeamsEditor.vue';
 

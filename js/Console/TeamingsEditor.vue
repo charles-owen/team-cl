@@ -48,8 +48,6 @@
 		    .then((response) => {
 			    if (!response.hasError()) {
 			    	this.take(response);
-				    console.log(response);
-
 			    } else {
 				    this.$site.toast(this, response);
 			    }
@@ -67,8 +65,6 @@
   			for(let row of data) {
   				this.teamings.push(new Teaming(row));
         }
-
-        console.log(this.teamings);
       },
   		add() {
   			const teaming = new Teaming();

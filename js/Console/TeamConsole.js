@@ -13,7 +13,7 @@ export let TeamConsole = function() {
 TeamConsole.setup = function(Console) {
     Console.tables.add({
         title: 'Teams',
-        order: 20,
+        order: 35,
         api: '/api/team/tables'
     });
 

@@ -151,12 +151,10 @@ SQL;
 	}
 
 
-	/** Update a teaming record
-	 * @param $id ID for the record
-	 * @param $tag New tag
-	 * @param $name New name
-	 * @param $public Public
-	 * @return true if successful, false otherwise
+	/**
+	 * Update a teaming record
+	 * @param Teaming $teaming
+	 * @return bool true if successful
 	 */
 	public function update(Teaming $teaming) {
 		$pdo = $this->pdo();
@@ -200,12 +198,12 @@ SQL;
 	}
 
 	/**
- * Get the team for a given user
- * @param User $user User we are getting the team for
- * @param string $teamingTag The teaming tag
- * @param $memberId
- * @return Team|null
- */
+	 * Get the team for a given user
+	 * @param User $user User we are getting the team for
+	 * @param string $teamingTag The teaming tag
+	 * @param bool $getMembers True if we need to fetch the members as well
+	 * @return Team|null
+	 */
 	public function getTeamByMember(User $user, $teamingTag, $getMembers = false) {
 		$teams = new Teams($this->config);
 		$teamMembers = new TeamMembers($this->config);
@@ -243,6 +241,7 @@ SQL;
 	 * Get the team for a given user
 	 * @param User $user User we are getting the team for
 	 * @param string $teamingId The teaming ID
+	 * @param bool $getMembers True if we need to fetch the members as well
 	 * @return Team|null
 	 */
 	public function getTeamByMember2(User $user, $teamingId, $getMembers = false) {

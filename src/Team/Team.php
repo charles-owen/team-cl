@@ -90,6 +90,7 @@ class Team {
 	 * Construct an email link for a team
 	 *
 	 * Call this function with results from get_members()
+	 * @param Site $site The site object
 	 * @param string $class Optional class to add to the a tag.
 	 * @return string HTML link
 	 */

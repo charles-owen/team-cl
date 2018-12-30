@@ -21,7 +21,10 @@ use CL\Site\MetaData;
  * @endcond
  */
 class Teaming {
-
+	/**
+	 * Teaming constructor.
+	 * @param array|null $row Database row
+	 */
 	public function __construct(array $row = null) {
 		if($row !== null) {
 			$this->id = +$row['id'];
@@ -129,6 +132,10 @@ class Teaming {
 		}
 	}
 
+	/**
+	 * Return teaming data suitable for sending to client.
+	 * @return array Data array
+	 */
 	public function data() {
 		return [
 			'id'=>$this->id,

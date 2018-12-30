@@ -79,6 +79,12 @@ class TeamMemberView extends \CL\Site\ViewAux {
 		return [];
 	}
 
+	/**
+	 * Get the team this user is a member of.
+	 *
+	 * If the user is in more than one team (unlikely, only the first is returned.
+	 * @return Team object.
+	 */
 	public function get_team() {
 		$teams = $this->get_teams();
 		if(count($teams) == 0) {
@@ -203,7 +209,14 @@ class TeamMemberView extends \CL\Site\ViewAux {
 		return $this->teamsInOrder[$index];
 	}
 
-
+	/**
+	 * Get the previous team for a given team.
+	 *
+	 * This is useful for making next/prev team links
+	 *
+	 * @param int $teamId Team ID
+	 * @return Team
+	 */
 	public function get_prev_by_id($teamId) {
 		$index = $this->teamIndex($teamId);
 		if($index < 1) {
@@ -213,6 +226,15 @@ class TeamMemberView extends \CL\Site\ViewAux {
 		return $this->teamsInOrder[$index-1];
 	}
 
+
+	/**
+	 * Get the next team for a given team.
+	 *
+	 * This is useful for making next/prev team links
+	 *
+	 * @param int $teamId Team ID
+	 * @return Team
+	 */
 	public function get_next_by_id($teamId) {
 		$index = $this->teamIndex($teamId);
 		if($index < 0 || $index >= count($this->teamsInOrder) - 1) {
@@ -238,8 +260,6 @@ class TeamMemberView extends \CL\Site\ViewAux {
 
 		return -1;
 	}
-
-
 
 
 	/**

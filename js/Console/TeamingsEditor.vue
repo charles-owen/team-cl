@@ -26,10 +26,11 @@
 </template>
 
 <script>
-  import ConsoleComponentBase from 'console-cl/js/ConsoleComponentBase.vue';
 	import Dialog from 'dialog-cl';
   import {Teaming} from '../Teaming';
   import TeamingEditorVue from './TeamingEditor.vue';
+
+  const ConsoleComponentBase = Site.ConsoleComponentBase;
 
   export default {
   	extends: ConsoleComponentBase,

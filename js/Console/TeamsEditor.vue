@@ -45,7 +45,6 @@
 </template>
 
 <script>
-	import ConsoleComponentBase from 'console-cl/js/ConsoleComponentBase.vue';
 	import TeamEditorVue from './TeamEditor.vue';
   import Dialog from 'dialog-cl';
   import {Team} from '../Team';
@@ -53,6 +52,9 @@
   import {VueDialog} from 'site-cl/js/Vue/VueDialog';
   import TeamDistributerVue from './TeamDistributer.vue';
   import TeamNameLoaderVue from './TeamNameLoader.vue';
+
+  const ConsoleComponentBase = Site.ConsoleComponentBase;
+
 
   export default {
 	    extends: ConsoleComponentBase,

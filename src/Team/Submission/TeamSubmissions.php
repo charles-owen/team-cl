@@ -64,7 +64,7 @@ SQL;
 	 */
 	public function submit_text($teamId, User $user, $assignTag, $submissionTag,
 	                            $date, $text, $type="text/plain") {
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 insert into $this->tablename(teamid, memberid, assigntag, submissiontag, date, text, type)
@@ -110,7 +110,7 @@ SQL;
 			return false;
 		}
 
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 insert into $this->tablename(teamid, memberid, assigntag, submissiontag, date, `binary`, name, type)
@@ -154,7 +154,7 @@ SQL;
 	 * 		type, binary, memberid, assigntag, submissiontag, name
 	 */
 	public function get_file($id) {
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 select `binary`, type, memberid, assigntag, submissiontag, name, date, teamid from $this->tablename
@@ -240,7 +240,7 @@ SQL;
 	 *     id, date, name, type
 	 */
 	public function get_submissions($teamId, $assignTag, $submissionTag, $mostRecentOnly = false) {
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$members = new Members($this->config);
 		$sql = $members->memberUserJoinSQL(

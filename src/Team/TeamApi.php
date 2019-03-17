@@ -286,6 +286,19 @@ class TeamApi extends \CL\Users\Api\Resource {
 					$teamings->add($teaming);
 					break;
 
+				case 'copy':
+					$teaming = new Teaming();
+					$post = $server->post;
+					$this->ensure($post, ['orig', 'tag', 'name', 'public']);
+					$teaming->tag = strip_tags($post['tag']);
+					$teaming->name = strip_tags($post['name']);
+					$teaming->public = $post['public'] === true;
+					$teaming->semester = $user->member->semester;
+					$teaming->sectionId = $user->member->sectionId;
+
+					$teamings->duplicate($post['orig'], $teaming);
+					break;
+
 				case 'update':
 					$teaming = new Teaming();
 					$post = $server->post;

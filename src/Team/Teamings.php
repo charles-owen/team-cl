@@ -48,7 +48,7 @@ SQL;
 	 * @return int ID of new record or null if insert failed
 	 */
 	public function add(Teaming $teaming) {
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 insert into $this->tablename(tag, name, semester, section, public, metadata)
@@ -76,7 +76,7 @@ SQL;
 	 * @return array of Teaming objects
 	 */
 	public function getBySection($semester, $sectionId) {
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 select *
@@ -104,7 +104,7 @@ SQL;
 	 * @return Teaming object or null
 	 */
 	public function getByTag($semester, $sectionId, $tag) {
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 select *
@@ -130,7 +130,7 @@ SQL;
 	 * @return Teaming object or null
 	 */
 	public function getById($id) {
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 select *
@@ -157,7 +157,7 @@ SQL;
 	 * @return bool true if successful
 	 */
 	public function update(Teaming $teaming) {
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 update $this->tablename
@@ -181,7 +181,7 @@ SQL;
 	 * @return true if successful, false otherwise
 	 */
 	public function delete($id) {
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 delete from $this->tablename
@@ -208,7 +208,7 @@ SQL;
 		$teams = new Teams($this->config);
 		$teamMembers = new TeamMembers($this->config);
 
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 select team.id as id, team.teamingid as teamingid, team.name as name
@@ -248,7 +248,7 @@ SQL;
 		$teams = new Teams($this->config);
 		$teamMembers = new TeamMembers($this->config);
 
-		$pdo = $this->pdo();
+		$pdo = $this->pdo;
 
 		$sql = <<<SQL
 select team.id as id, team.teamingid as teamingid, team.name as name
@@ -296,46 +296,45 @@ SQL;
 	}
 
 
-//
-//	/** Duplicate a teaming
-//	 * @param $id ID for the teaming record
-//	 * @returns id if successful, null otherwise */
-//	public function duplicate($id) {
-//		$teaming = $this->get_by_id($id);
-//		if($teaming === null) {
-//			return null;
-//		}
-//
-//		// Duplicate the teaming
-//		$newId = $this->add($teaming['tag'] . '-1',
-//			$teaming['name'] . ' Copy',
-//			$teaming['semester'],
-//			$teaming['section'],
-//			$teaming['public']);
-//		if($newId === null) {
-//			return null;
-//		}
-//
-//		// Get the teams and their members
-//		$teamsTable = new Teams($this->course);
-//		$teamMembersTable = new TeamMembers($this->course);
-//
-//		$teams = $teamsTable->get($id);
-//		foreach($teams as $team) {
-//			// Create a new team
-//			$newTeamId = $teamsTable->add($newId, $team['name']);
-//
-//			// Get and duplicate the team members
-//			$members = $teamMembersTable->get_members($team['id']);
-//			foreach($members as $member) {
-//				$teamMembersTable->add($newTeamId, $member);
-//			}
-//		}
-//
-//		return $id;
-//
-//	}
-//
+
+	/**
+	 * Duplicate a teaming
+	 * @param int $id ID for the teaming record we are copying
+	 * @param Teaming $copy
+	 * @return int id if successful, null otherwise
+	 */
+	public function duplicate($id, Teaming $copy) {
+		$teaming = $this->getById($id);
+		if($teaming === null) {
+			return null;
+		}
+
+		// Duplicate the teaming
+		$newId = $this->add($copy);
+		if($newId === null) {
+			return null;
+		}
+
+		// Get the teams and their members
+		$teamsTable = new Teams($this->config);
+		$teamMembersTable = new TeamMembers($this->config);
+
+		$teams = $teamsTable->getTeams($teaming->id);
+		foreach($teams as $team) {
+			// Create a new team
+			$newTeam = $teamsTable->add($copy->id, $team->name);
+
+			// Get and duplicate the team members
+			$teamMembersTable->getTeamMembers($team);
+			foreach($team->members as $member) {
+				$teamMembersTable->add($member->member->id, $newTeam->id);
+			}
+		}
+
+		return $id;
+
+	}
+
 
 
 }

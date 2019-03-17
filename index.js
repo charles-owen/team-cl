@@ -9,12 +9,12 @@ import {TeamConsole} from './js/Console/TeamConsole';
 //
 // Create the team runtime component
 //
-TeamFactory.create(Site.Site);
+TeamFactory.create(Site.site);
 
 //
 // Install the console components
 //
 
-if(Site.Site.console !== undefined) {
-	TeamConsole.setup(Site.Site.console);
+if(Site.site.console !== undefined) {
+	TeamConsole.setup(Site.site.console);
 }

@@ -10,6 +10,7 @@
       </tr>
       <tr v-for="teaming in teamings" :key="teaming.id">
         <td><a @click.prevent="editer(teaming)"><img :src="root + '/vendor/cl/site/img/pencil16.png'" alt="Edit" title="Edit"></a>
+          <a @click.prevent="copier(teaming)"><img :src="root + '/vendor/cl/site/img/copy16.png'" alt="Copy" title="Copy"></a>
           <a @click.prevent="deleter(teaming)"><img :src="root + '/vendor/cl/site/img/x.png'" alt="Delete" title="Delete"></a>
         </td>
         <td><router-link :to="root + '/cl/console/team/' + teaming.id">{{teaming.tag}}</router-link></td>
@@ -17,10 +18,10 @@
         <td>{{teaming.public ? 'Public' : 'Private'}}</td>
       </tr>
     </table>
-    <div v-else class="center">
-      <p>There are currently no defined teamings.</p>
-      <p>Choose Add Teaming to add a new teaming.</p>
-    </div>
+      <div v-else class="center">
+        <p>There are currently no defined teamings.</p>
+        <p>Choose Add Teaming to add a new teaming.</p>
+      </div>
     </div>
   </div>
 </template>
@@ -211,7 +212,6 @@
 			        .then((response) => {
 				        if (!response.hasError()) {
 					        this.take(response);
-					        dialog.close();
 				        } else {
 					        this.$site.toast(this, response);
 				        }
@@ -221,6 +221,77 @@
 				        this.$site.toast(this, error);
 			        });
 		      });
+      },
+      copier(teaming) {
+  			const copy = teaming.clone();
+  			copy.name += '-copy';
+  			copy.tag += '-copy';
+
+        new Dialog({
+          title: 'Copy Teaming ' + teaming.name,
+          content: '<div id="cl-teaming"></div>',
+          addClass: 'cl-dialog-narrow',
+          buttons: [
+            {
+              contents: 'Copy',
+              focus: true,
+              click: (dialog) => {
+                if(!this.$site.Tags.validate(copy.tag)) {
+                  return;
+                }
+
+                if(teaming.name.trim() === '') {
+                  new Dialog.MessageBox('Must enter name', 'You must provide a non-empty name',
+                    Dialog.MessageBox.OK);
+                  return;
+                }
+
+                let params = {
+                	orig: teaming.id,
+                  tag: copy.tag.trim(),
+                  name: copy.name.trim(),
+                  public: copy.public
+                }
+
+                this.$site.api.post('/api/team/teamings/copy', params)
+                  .then((response) => {
+                    if (!response.hasError()) {
+                	    this.take(response);
+                	    dialog.close();
+                    } else {
+                	    this.$site.toast(this, response);
+                    }
+
+                  })
+                  .catch((error) => {
+                    this.$site.toast(this, error);
+                  });
+
+              }
+            },
+            {
+              contents: 'Cancel',
+              click: (dialog) => {
+                dialog.close();
+              }
+            }
+          ]
+
+        });
+
+	      // Create a Vue inside the dialog box
+	      new this.$site.Vue({
+		      el: '#cl-teaming',
+		      data: function() {
+			      return {
+				      teaming: copy
+			      }
+		      },
+		      template: `<editor :teaming="teaming"></editor>`,
+		      components: {
+			      editor: TeamingEditorVue
+		      }
+	      })
       }
     }
   }

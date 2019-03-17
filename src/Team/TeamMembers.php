@@ -100,7 +100,7 @@ SQL;
 	/**
 	 * Get all team members and their team ID for a given teaming.
 	 * @param Teaming $teaming Teaming we are loading
-	 * @return array Array fo
+	 * @return array Array of teams.
 	 */
 	public function getMembers(Teaming $teaming) {
 		$teamsTable = new Teams($this->config);
@@ -136,7 +136,6 @@ SQL;
 			$user = new User($row, 'user_');
 			$user->member = new Member($row, 'member_');
 			$teams[$teamId][] = $user;
-
 		}
 
 		return $teams;

@@ -48,13 +48,12 @@
 	import TeamEditorVue from './TeamEditor.vue';
   import Dialog from 'dialog-cl';
   import {Team} from '../Team';
-  import MenuVue from 'site-cl/js/UI/Menu.vue'
-  import {VueDialog} from 'site-cl/js/Vue/VueDialog';
   import TeamDistributerVue from './TeamDistributer.vue';
   import TeamNameLoaderVue from './TeamNameLoader.vue';
 
   const ConsoleComponentBase = Site.ConsoleComponentBase;
-
+  const MenuVue = Site.site.MenuVue;
+  const VueDialog = Site.site.VueDialog;
 
   export default {
 	    extends: ConsoleComponentBase,

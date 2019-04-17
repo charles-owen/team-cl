@@ -127,9 +127,10 @@ class TeamMemberView extends \CL\Site\ViewAux {
 
 	/**
 	 * Present all teams for team administration purposes.
-	 * @return string
+     * @param string $link Optional link to a team information page
+	 * @return string HTML
 	 */
-	public function present_all_teams($link) {
+	public function present_all_teams($link=null) {
 		$this->fetchAll();
 
 		$html = '';
@@ -290,13 +291,27 @@ HTML;
 		//
 		if($link !== null) {
 			$html .= <<<HTML
-<h4 class="center"><a href="$link?teaming=$teamingTag&team=$teamId">$teamingname Team: $teamname</a></h4>
+<h4 class="center"><a href="$link?teaming=$teamingTag&team=$teamId">$teamingname Team: $teamname</a>
 HTML;
 		} else {
 			$html .= <<<HTML
-<h4 class="center">$teamingname Team: $teamname</h4>
+<h4 class="center">$teamingname Team: $teamname
 HTML;
 		}
+
+		//
+        // Optional links
+        //
+        foreach($this->links as $l) {
+            $url = $l['link'];
+            $title = $l['title'];
+            $sep = strpos($url, '?') !== false ? '&' : '?';
+            $html .= <<<HTML
+ <a class="small" href="$url{$sep}teaming=$teamingTag&team=$teamId">$title</a>
+HTML;
+        }
+
+        $html .= '</h4>';
 
 		//
 		// Email notice
@@ -339,6 +354,15 @@ HTML;
 		return $html;
 	}
 
+    /**
+     * Add a link that will appear with the team listing. Multiple links can be added.
+     * @param string $link Link. Will have ?teaming= appended
+     * @param string $title Contents of the link tag
+     */
+	public function addLink($link, $title) {
+        $this->links[] = ['link'=>$link, 'title'=>$title];
+    }
+
 	private $site;
 	private $user;
 	private $teamingTag;
@@ -346,4 +370,7 @@ HTML;
 	private $teaming = null;
 	private $teams = [];
 	private $teamsInOrder = [];
+
+	// Optional added links
+	private $links = [];
 }

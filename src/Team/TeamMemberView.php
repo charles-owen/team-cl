@@ -7,6 +7,7 @@ namespace CL\Team;
 
 use CL\Site\Site;
 use CL\Site\View;
+use CL\Team\Submission\TeamSubmissions;
 
 /**
  * ViewAux class for a team member or all teams.
@@ -361,6 +362,33 @@ HTML;
      */
 	public function addLink($link, $title) {
         $this->links[] = ['link'=>$link, 'title'=>$title];
+    }
+
+    /**
+     * Present the most recent text submission for a team. Useful on team information pages.
+     * @param Team $team Team to submit for.
+     * @param string $title Any title string to present (can include tags)
+     * @param string $assignmentTag The assignment tag
+     * @param string $submissionTag The submission tag
+     * @return string HTML
+     */
+    public function presentMostRecent(Team $team, $title, $assignmentTag, $submissionTag) {
+        $teamSubmissions = new TeamSubmissions($this->site->db);
+
+        $html = '';
+        if($title !== null) {
+            $html .= $title;
+        }
+
+        $submissions = $teamSubmissions->get_submissions($team->id, $assignmentTag, $submissionTag, true);
+        if(count($submissions) > 0) {
+            $text = $teamSubmissions->get_text($submissions[0]['id']);
+            $html .= '<pre class="cl-preview yellow-pad">' . $text['text'] . "</pre>";
+        } else {
+            $html .= '<p class="center"><em>*** none provided ***</em></p>';
+        }
+
+        return $html;
     }
 
 	private $site;

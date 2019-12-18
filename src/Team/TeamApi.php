@@ -59,10 +59,89 @@ class TeamApi extends \CL\Users\Api\Resource {
 
 			case 'tables':
 				return $this->tables($site, $server, new TeamTables($site->db));
+
+			// /api/team/distribute/:assigntag/:memberid
+            case 'distribute':
+                return $this->gradeDistribute($site, $server, $params, $time);
 		}
 
 		throw new APIException("Invalid API Path", APIException::INVALID_API_PATH);
 	}
+
+    /**
+     * Distribute a grade item among team members.
+     *
+     * This is only available if the grades component is installed.
+     *
+     * @param Site $site
+     * @param Server $server
+     * @param $params
+     * @param $time
+     * @return JsonAPI
+     * @throws APIException
+     */
+	private function gradeDistribute(Site $site, Server $server, $params, $time) {
+        if(count($params) < 3) {
+            throw new APIException("Invalid API Path", APIException::INVALID_API_PATH);
+        }
+
+        $user = $this->isUser($site, Member::GRADER);
+        $post = $server->post;
+
+        $this->ensure($post, ['teaming']);
+        $this->ensure($post, ['gradeTag']);
+
+        // Gather all data
+        $assignTag = $params[1];
+        $memberId = +$params[2];
+        $teamingTag = strip_tags($post['teaming']);
+        $gradeTag = strip_tags($post['gradeTag']);
+
+        // Get the distribution source member
+        $members = new Members($site->db);
+        $sourceMember = $members->getAsUser($memberId);
+        if($sourceMember === null) {
+            throw new APIException("Member does not exist");
+        }
+
+        // Find the teaming
+        $teamings = new Teamings($site->db);
+        $team = $teamings->getTeamByMember($sourceMember, $teamingTag, true);
+        if($team === null) {
+            throw new APIException("Team does not exist");
+        }
+
+        // Get the grade
+        $grades = new \CL\Grades\Grades($site->db);
+        $grade = $grades->get($sourceMember, $assignTag, $gradeTag);
+        $sourceMetadata = $grade->metaData;
+
+        foreach($team->members as $otherMember) {
+            if($otherMember->member->id === $sourceMember->member->id) {
+                continue;
+            }
+
+            // Get the other member's grade
+            $memberGrade = $grades->get($otherMember, $assignTag, $gradeTag);
+
+            // Get the history Metadata for the member
+            $history = $memberGrade->metaData->get('public', \CL\Grades\Grade::HISTORY, []);
+
+
+            // Copy over the Metadata from the source grade,
+            // then restore the grade history
+            $memberGrade->meta->copyFrom($sourceMetadata);
+            $memberGrade->metaData->set('public', \CL\Grades\Grade::HISTORY, $history);
+
+            $memberGrade->set($user, $grade->points, $grade->comment, $time, true);
+            $grades->post($otherMember, $memberGrade);
+
+            $history = $memberGrade->metaData->get('public', \CL\Grades\Grade::HISTORY, []);
+        }
+
+        $json = new JsonAPI();
+        return $json;
+    }
 
 	private function teams(Site $site, Server $server, array $params, $time) {
 		if(count($params) < 2) {

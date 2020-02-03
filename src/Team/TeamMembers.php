@@ -117,12 +117,12 @@ left join (
    where team.teamingid=?
 ) as validteam
 on member.id=team_memberid
-where member.role=?
+where member.role=? and member.semester=? and member.section=?
 order by user.name, user.id
 SQL;
 
 		$stmt = $this->pdo->prepare($sql);
-		$exec = [$teaming->id, Member::STUDENT];
+		$exec = [$teaming->id, Member::STUDENT, $teaming->semester, $teaming->sectionId];
 		// echo $this->sub_sql($sql, $exec);
 		$stmt->execute($exec);
 

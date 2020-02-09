@@ -347,7 +347,7 @@ HTML;
 
 			$html .= <<<HTML
 <tr><td>$name</td><td>$userid</td>
-<td><a href="mailto:$email&subject=$subject" title="Email Team Member">$email</a></td></tr>
+<td><a href="mailto:$email?subject=$subject" title="Email Team Member">$email</a></td></tr>
 HTML;
 		}
 

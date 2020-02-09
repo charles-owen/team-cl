@@ -108,7 +108,7 @@ class Team {
 			$subject = $site->siteName . ' Team ' . $this->name;
 			$classAttr = $class === null ? '' : ' class="' . $class . '"';
 			$email = '<a' . $classAttr . ' href="mailto:' . $email .
-				'&subject=' . rawurlencode($subject) . '" title="Email Team">email</a>';
+				'?subject=' . rawurlencode($subject) . '" title="Email Team">email</a>';
 		}
 
 		return $email;

@@ -126,22 +126,6 @@ class TeamMemberView extends \CL\Site\ViewAux {
 		return $html;
 	}
 
-	/**
-	 * Present all teams for team administration purposes.
-     * @param string $link Optional link to a team information page
-	 * @return string HTML
-	 */
-	public function present_all_teams($link=null) {
-		$this->fetchAll();
-
-		$html = '';
-		foreach($this->teams as $team) {
-			$html .= $this->present_team($team, false, $link);
-		}
-
-		return $html;
-	}
-
 
 
 	private function fetchAll() {
@@ -264,7 +248,25 @@ class TeamMemberView extends \CL\Site\ViewAux {
 	}
 
 
-	/**
+    /**
+     * Present all teams for team administration purposes.
+     * @param string $link Optional link to a team information page
+     * @return string HTML
+     */
+    public function present_all_teams($link=null, $assignTag=null) {
+        $this->fetchAll();
+
+        $html = '';
+        foreach($this->teams as $team) {
+            $html .= $this->present_team($team, false, $link, $assignTag);
+        }
+
+        return $html;
+    }
+
+
+
+    /**
 	 * Present a single team, given the team structure
 	 * @param Team $team Team object to present
 	 * @param bool $emailNotice If true include a notice about email links
@@ -282,6 +284,9 @@ class TeamMemberView extends \CL\Site\ViewAux {
 		$teamId = $team->id;
 
 		$email = $team->email_link($this->site);
+
+		$section = $this->site->course->get_section_for($this->user);
+		$assignTag = $section->substituteLC($assignTag);
 
 		$html = <<<HTML
 	<div class="left">	
@@ -337,7 +342,7 @@ HTML;
 			$subject = rawurlencode($this->site->siteName . ' Team ' . $teamname);
 
 			if($assignTag !== null) {
-				$url = $this->site->root . '/cl/console/grading/' . $assignTag . '/' . $member->id;
+				$url = $this->site->root . '/cl/console/grading/' . $assignTag . '/' . $member->member->id;
 				$name = <<<HTML
 <a href="$url" target="grading">$member->displayName</a>
 HTML;
@@ -363,6 +368,7 @@ HTML;
 	public function addLink($link, $title) {
         $this->links[] = ['link'=>$link, 'title'=>$title];
     }
+
 
     /**
      * Present the most recent text submission for a team. Useful on team information pages.

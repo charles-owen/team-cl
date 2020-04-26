@@ -63,10 +63,44 @@ class TeamApi extends \CL\Users\Api\Resource {
 			// /api/team/distribute/:assigntag/:memberid
             case 'distribute':
                 return $this->gradeDistribute($site, $server, $params, $time);
+
+            // /api/team/:teamid
+            default:
+                return $this->team($site, $server, $params, $time);
 		}
 
-		throw new APIException("Invalid API Path", APIException::INVALID_API_PATH);
+		// throw new APIException("Invalid API Path", APIException::INVALID_API_PATH);
 	}
+
+    // /api/team/:teamid
+    private function team(Site $site, Server $server, array $params, $time) {
+        $teamId = +$params[0];
+
+        //
+        // Get the team
+        //
+        $teamsTable = new Teams($site->db);
+        $teamMembers = new TeamMembers($site->db);
+
+        //
+        // Get the teams
+        //
+        $team = $teamsTable->get($teamId);
+        if($team === null) {
+            throw new APIException("Team does not exist", APIException::GENERAL_ERROR);
+        }
+
+        //
+        // Get the members
+        //
+        $members = $teamMembers->getTeamMembers($team);
+
+        //
+        // Convert to data and send to the client
+        $json = new JsonAPI();
+        $json->addData('team', $teamId, $team->data());
+        return $json;
+    }
 
     /**
      * Distribute a grade item among team members.

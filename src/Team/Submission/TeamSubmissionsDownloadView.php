@@ -28,7 +28,9 @@ class TeamSubmissionsDownloadView extends View {
 	public function __construct(Site $site, Server $server, $properties) {
 		parent::__construct($site, ['at-least'=>Member::STAFF]);
 
-		$this->setTitle('Bulk Download');
+        $this->server = $server;
+
+        $this->setTitle('Bulk Download');
 
 		// Get the assignment
 		$assignTag = $properties['assign'];
@@ -73,6 +75,18 @@ class TeamSubmissionsDownloadView extends View {
 		/**
 		 * Pull the submissions
 		 */
+        $from = null;
+        $to = null;
+
+        $get = $this->server->get;
+        if(isset($get['fm'])) {
+            $from = strip_tags(strtolower($get['fm']));
+        }
+
+        if(isset($get['to'])) {
+            $to = strip_tags(strtolower($get['to']));
+        }
+
 		$submissions = new TeamSubmissions($this->site->db);
 
 		$temp_dir = $this->get_temp_dir();
@@ -81,6 +95,12 @@ class TeamSubmissionsDownloadView extends View {
 
 		$cnt = 0;
 		foreach ($teams as $team) {
+            if(($from !== null && strtolower($team->name) < $from) || ($to !== null && strtolower($team->name) > $to)) {
+                continue;
+            }
+
+           // echo "<p>" . $team->name . "</p>";
+
 			$submits = $submissions->get_submissions($team->id, $this->assignment->tag, $this->submission->tag, true);
 			if (count($submits) > 0) {
 				$submit = $submits[0];
@@ -167,6 +187,7 @@ class TeamSubmissionsDownloadView extends View {
 	private $assignment;
 	private $submission;
 	private $teaming;
+    private $server;
 
 	// Optional limit on how number of students to download
 	// If set to zero, there is no limit

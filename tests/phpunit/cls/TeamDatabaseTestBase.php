@@ -4,7 +4,6 @@
  */
 
 use CL\Site\Test\DatabaseTestBase;
-use CL\Course\Course;
 
 
 /**
@@ -17,13 +16,4 @@ abstract class TeamDatabaseTestBase extends DatabaseTestBase {
 	public function __construct() {
 		parent::__construct(__DIR__ . '/..');
 	}
-
-	protected function createSite() {
-		$site = parent::createSite();
-
-		return $site;
-	}
-
-	protected $course;
-
 }

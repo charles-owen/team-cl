@@ -14,26 +14,23 @@ use CL\Course\Members;
 use CL\Team\Teams;
 use CL\Team\TeamMembers;
 
-class TeamingsTest extends TeamDatabaseTestBase {
-	/**
-	 * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-	 */
-	public function getDataSet() {
-		return $this->dataSets(['teaming.xml', 'team.xml', 'teammember.xml', 'user-many.xml', 'member-many.xml']);
-	}
+class TeamsTest extends TeamDatabaseTestBase {
 
+    protected function setUp() : void {
+        $this->ensureTable(new Teamings($this->site->db));
+        $this->ensureTable(new Teams($this->site->db));
+        $this->ensureTable(new TeamMembers($this->site->db));
+        $this->ensureTable(new Users($this->site->db));
+        $this->ensureTable(new Members($this->site->db));
+    }
 
-	public function ensureTables() {
-		$this->ensureTable(new Teamings($this->site->db));
-		$this->ensureTable(new Teams($this->site->db));
-		$this->ensureTable(new TeamMembers($this->site->db));
-		$this->ensureTable(new Users($this->site->db));
-		$this->ensureTable(new Members($this->site->db));
-	}
 
 
 	public function test() {
-		// Create a teaming
+        $this->dataSets(['db/user-many.xml', 'db/member-many.xml']);
+
+
+        // Create a teaming
 		$teamings = new Teamings($this->site->db);
 
 		$teaming1 = new Teaming();
@@ -70,7 +67,7 @@ class TeamingsTest extends TeamDatabaseTestBase {
 
 		$userTeam = $teamings->getTeamByMember($user22, 'project1');
 		$this->assertEquals('Team 1', $userTeam->name);
-		print_r($userTeam);
+		//print_r($userTeam);
 
 	}
 

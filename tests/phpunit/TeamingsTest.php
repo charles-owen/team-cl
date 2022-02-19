@@ -6,22 +6,13 @@
 require_once __DIR__ . '/init.php';
 require_once __DIR__ . '/cls/TeamDatabaseTestBase.php';
 
-use CL\Site\Test\DatabaseTestBase;
 use CL\Team\Teamings;
 use CL\Team\Teaming;
 
 class TeamingsTest extends TeamDatabaseTestBase {
-	/**
-	 * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-	 */
-	public function getDataSet() {
-		return $this->dataSets(['teaming.xml']);
-	}
-
-
-	public function ensureTables() {
-		$this->ensureTable(new Teamings($this->site->db));
-	}
+    protected function setUp() : void {
+        $this->ensureTable(new Teamings($this->site->db));
+    }
 
 
 	public function test() {
@@ -56,26 +47,7 @@ class TeamingsTest extends TeamDatabaseTestBase {
 	}
 
 
-	
-//	public function test_construct() {
-//		$teamings = new \Team\Teamings(get_course());
-//		$this->assertInstanceOf('\Team\Teamings', $teamings);
-//		return $teamings;
-//	}
-//
-//	/**
-//	 * @depends test_construct
-//	 */
-//	public function test_get_by_section(\Team\Teamings $teamings) {
-//		$results = $teamings->get_by_section("001");
-//		$this->assertEquals(1, count($results));
-//		$result = $results[0];
-//		$this->assertEquals(1, $result['id']);
-//		$this->assertEquals('testteaming', $result['tag']);
-//		$this->assertEquals('Test Teaming', $result['name']);
-//		$this->assertTrue($result['public']);
-//	}
-//
+
 //	/**
 //	 * @depends test_construct
 //	 */

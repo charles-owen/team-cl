@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `$this->tablename` (
   `tag`    varchar(30) NOT NULL, 
   name     varchar(200) NOT NULL, 
   semester char(4) NOT NULL, 
-  section  char(3) NOT NULL, 
+  section  char(4) NOT NULL, 
   `public` int(1) NOT NULL, 
   metadata mediumtext, 
   PRIMARY KEY (id), 

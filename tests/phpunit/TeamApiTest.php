@@ -17,24 +17,19 @@ use CL\Course\Member;
 use CL\Team\TeamApi;
 
 class TeamApiTest extends TeamDatabaseTestBase {
-	/**
-	 * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-	 */
-	public function getDataSet() {
-		return $this->dataSets(['teaming.xml', 'team.xml', 'teammember.xml', 'user-many.xml', 'member-many.xml']);
-	}
 
 
-	public function ensureTables() {
-		$this->ensureTable(new Teamings($this->site->db));
-		$this->ensureTable(new Teams($this->site->db));
-		$this->ensureTable(new TeamMembers($this->site->db));
-		$this->ensureTable(new Users($this->site->db));
-		$this->ensureTable(new Members($this->site->db));
-	}
-
+    protected function setUp() : void {
+        $this->ensureTable(new Teamings($this->site->db));
+        $this->ensureTable(new Teams($this->site->db));
+        $this->ensureTable(new TeamMembers($this->site->db));
+        $this->ensureTable(new Users($this->site->db));
+        $this->ensureTable(new Members($this->site->db));
+    }
 
 	public function test() {
+        $this->dataSets(['db/user-many.xml', 'db/member-many.xml']);
+
 		$teamings = new Teamings($this->site->db);
 
 		$teaming1 = new Teaming();
@@ -62,14 +57,12 @@ class TeamApiTest extends TeamDatabaseTestBase {
 		$server->setServer('REQUEST_URI', '/api/team/teams/' . $teamingId);
 		$server->setPost('value', $time1);
 		$ret = $api->apiDispatch($site, $server, ['teams', $teamingId], [], $time1);
-		$this->assertNotContains('error', $ret);
+		$this->assertStringNotContainsString('error', $ret);
 		$json = json_decode($ret, true);
 
 		//print_r($json);
 		$teams = $json['data'][0]['attributes'];
 		$this->assertCount(1, $teams);
-
-
 	}
 
 

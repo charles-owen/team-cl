@@ -93,7 +93,7 @@ class TeamApi extends \CL\Users\Api\Resource {
         //
         // Get the members
         //
-        $members = $teamMembers->getTeamMembers($team);
+        $teamMembers->getTeamMembers($team);
 
         //
         // Convert to data and send to the client

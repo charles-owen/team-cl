@@ -9,7 +9,7 @@ use CL\Site\PropertyHelper;
  */
 class MultipleChoice extends Item {
     public function __construct($tag) {
-        $this->tag = $tag;
+        parent::__construct($tag);
     }
 
     public function AddChoice($code, $text) {
@@ -26,11 +26,9 @@ class MultipleChoice extends Item {
      */
     public function __get($property) {
         switch($property) {
-            case 'text':
-                return $this->text;
 
             default:
-                return PropertyHelper::Error($property);
+                return parent::__get($property);
         }
     }
 
@@ -41,17 +39,26 @@ class MultipleChoice extends Item {
      */
     public function __set($property, $value) {
         switch($property) {
-            case 'text':
-                $this->text = $value;
-                break;
 
             default:
-                PropertyHelper::Error($property);
+                parent::__set($property, $value);
                 break;
         }
     }
 
-    private $tag;
-    private $text = '';
+    /**
+     * Return item data
+     * @return array
+     */
+    public function data() {
+        $data = parent::data();
+        $data['type'] = 'multiple-choice';
+        $data['choices'] = $this->choices;
+
+        return $data;
+    }
+
+
+
     private $choices = [];
 }

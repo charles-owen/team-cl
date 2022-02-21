@@ -1,9 +1,15 @@
-import {Team} from "./Team";
+import {TeamRater} from './TeamRater/TeamRater';
 
 export const TeamFactory = function() {
 }
 
 TeamFactory.create = function(site) {
 
-	new Team(site);
+	site.ready(() => {
+
+		let element;
+		if( (element = document.getElementById('cl-team-rater')) !== null) {
+			new TeamRater(site, element);
+		}
+	})
 }

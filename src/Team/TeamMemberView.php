@@ -40,7 +40,6 @@ class TeamMemberView extends \CL\Site\ViewAux {
 		switch($property) {
 			case 'teaming':
 				return $this->teamingTag;
-				break;
 
 			case 'team':
 				return $this->get_team();
@@ -60,10 +59,10 @@ class TeamMemberView extends \CL\Site\ViewAux {
 
 	/**
 	 * Get the teams this user is a member of.
-	 * @param null $public Optional boolean - if true display public teams only
+	 * @param Boolean $public Optional boolean - if true display public teams only
 	 * @return array of team items.
 	 */
-	public function get_teams($public = null) {
+	public function get_teams($public = true) {
 		/*
 		 * Get the teams this user is a member of
 		 */
@@ -142,7 +141,8 @@ class TeamMemberView extends \CL\Site\ViewAux {
 		$teamings = new Teamings($this->site->db);
 		$teaming = $teamings->getByTag($member->semester, $member->sectionId, $this->teamingTag);
 		if($teaming === null) {
-			return '<p class="shoutout">Teaming ' . $this->teamingTag . ' does not exist</p>';
+            // Teaming does not exist
+            return;
 		}
 
 		$this->teaming = $teaming;

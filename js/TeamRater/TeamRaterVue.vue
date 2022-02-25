@@ -13,12 +13,12 @@
           <div v-html="item.text"></div>
 
           <div v-if="item.type==='multiple-choice'" v-for="choice in item.choices">
-            <p class="cl-teamrater-radio"><input type="radio" v-model="values[member.id][item.tag]"
+            <p class="cl-teamrater-radio"><input type="radio" v-model="values[member.memberid][item.tag]"
                                                  :id="name(member, item, choice)" :value="choice.code"></input>
               <label :for="name(member, item, choice)" v-html="choice.text"></label></p>
           </div>
           <div v-if="item.type==='comment'">
-              <textarea class="cl-team-comment" v-model="values[member.id][item.tag]"></textarea>
+              <textarea class="cl-team-comment" v-model="values[member.memberid][item.tag]"></textarea>
           </div>
 
           <div v-if="item.after.length > 0" v-html="item.after"></div>
@@ -51,8 +51,8 @@ export default {
     if(this.json.team !== undefined) {
       for(const member of this.json.team.members) {
         // Create an object for this member
-        this.$set(this.values, member.id, {});
-        let memberData = this.values[member.id];
+        this.$set(this.values, member.memberid, {});
+        let memberData = this.values[member.memberid];
 
         for(const item of this.json.items) {
           this.$set(memberData, item.tag, item.type === 'comment' ? '' : null);
@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     name(member, item, choice) {
-      let n = 'cl-teamrater-' + member.id + '-' + item.tag
+      let n = 'cl-teamrater-' + member.memberid + '-' + item.tag
       if(choice !== undefined) {
         n += '-' + choice.code
       }
@@ -94,7 +94,7 @@ export default {
         for(const item of this.json.items) {
           const element = document.getElementById(this.name(member, item))
 
-          if(this.values[member.id][item.tag] === null) {
+          if(this.values[member.memberid][item.tag] === null) {
             any = true
             element.classList.add('cl-teamrater-missing')
           } else {

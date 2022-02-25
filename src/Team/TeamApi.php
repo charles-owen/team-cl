@@ -17,7 +17,7 @@ use CL\Team\Submission\TeamSubmissionApi;
 /**
  * API Resource for /api/team
  */
-class TeamApi extends \CL\Users\Api\Resource {
+class TeamApi extends \CL\Course\Api\Resource {
 
 	/**
 	 * QuizApi constructor.
@@ -64,6 +64,10 @@ class TeamApi extends \CL\Users\Api\Resource {
             case 'distribute':
                 return $this->gradeDistribute($site, $server, $params, $time);
 
+            // /api/team/rate/:assigntag/:teaming
+            case 'rate':
+                return $this->rate($site, $server, $params, $time);
+
             // /api/team/:teamid
             default:
                 return $this->team($site, $server, $params, $time);
@@ -71,6 +75,81 @@ class TeamApi extends \CL\Users\Api\Resource {
 
 		// throw new APIException("Invalid API Path", APIException::INVALID_API_PATH);
 	}
+
+    /**
+     * /api/team/rate/:assigntag/:teaming
+     * Create ratings by a team member.
+     *
+     * @param Site $site
+     * @param Server $server
+     * @param $params
+     * @param $time
+     * @return JsonAPI
+     * @throws APIException
+     */
+    private function rate(Site $site, Server $server, $params, $time) {
+        if(count($params) < 3) {
+            throw new APIException("Invalid API Path", APIException::INVALID_API_PATH);
+        }
+
+        $post = $server->post;
+        $this->ensure($post, ['ratings']);
+
+        // Must be a student in the course
+        $user = $this->isUser($site, Member::STUDENT);
+
+        //
+        // Get the assignment and ensure it is open. We can only
+        // rate when the assignment is open.
+        $assignTag = $params[1];
+
+        $assignment = $this->getAssignment($site, $user, $assignTag);
+        if(!$user->atLeast(User::STAFF) && !$assignment->is_open($user, $time)) {
+            throw new APIException("Assignment is not open rating");
+        }
+
+        //
+        // Get the team. We can only rate for a team we are a member
+        // of and can only rate members of our team.
+        //
+        $teamId = +$params[2];
+
+        //
+        // Get the team
+        //
+        $teamsTable = new Teams($site->db);
+        $teamMembers = new TeamMembers($site->db);
+
+        //
+        // Get the teams
+        //
+        $team = $teamsTable->get($teamId);
+        if($team === null) {
+            throw new APIException("Team does not exist", APIException::GENERAL_ERROR);
+        }
+
+        //
+        // Get the members of this team
+        //
+        $teamMembers->getTeamMembers($team);
+        if($team->getMember($user->member->id) === null) {
+            throw new APIException("Not a member of this team", APIException::GENERAL_ERROR);
+        }
+
+        $teamRatings = new TeamRatings($site->db);
+
+        $ratings = $post['ratings'];
+        foreach($ratings as $memberId => $rating) {
+            // Is this member in the team?
+            $ratee = $team->getMember(+$memberId);
+            if($ratee !== null) {
+                $teamRatings->add($teamId, $user->member->id, $ratee->member->id, $rating);
+            }
+        }
+
+        $json = new JsonAPI();
+        return $json;
+    }
 
     // /api/team/:teamid
     private function team(Site $site, Server $server, array $params, $time) {
@@ -103,6 +182,7 @@ class TeamApi extends \CL\Users\Api\Resource {
     }
 
     /**
+     * /api/team/distribute/:assigntag/:memberid
      * Distribute a grade item among team members.
      *
      * This is only available if the grades component is installed.

@@ -2,10 +2,9 @@
 
 namespace CL\Team\TeamRater;
 
-use CL\Site\PropertyHelper;
 
 /**
- * Multiple-choice item
+ * Multiple-choice item for team ratings
  */
 class MultipleChoice extends Item {
     public function __construct($tag) {

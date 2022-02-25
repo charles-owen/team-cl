@@ -72,6 +72,11 @@ class TeamPlugin extends \CL\Site\Plugin {
 				return $view->whole();
 			});
 
+            $router->addRoute(['team', 'ratings', ':teaming'], function(Site $site, Server $server, array $params, array $properties, $time) {
+                $view = new TeamRater\TeamRatingsView($site, $server, $properties);
+                return $view->whole();
+            });
+
 			$router->addRoute(['api', 'team', '*'], function(Site $site, Server $server, array $params, array $properties, $time) {
 				$resource = new TeamApi();
 				return $resource->apiDispatch($site, $server, $params, $properties, $time);

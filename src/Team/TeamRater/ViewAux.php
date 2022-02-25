@@ -1,25 +1,30 @@
 <?php
 /**
+ * @file
  * ViewAux class for rating team members
  */
 namespace CL\Team\TeamRater;
 
-use CL\Site\PropertyHelper;
 use CL\Site\Site;
 use CL\Site\View;
 use CL\Team\Team;
 use CL\Team\Teamings;
 use CL\Team\TeamMembers;
-use CL\Users\User;
+use CL\Team\TeamRatings;
+use CL\Course\Member;
 
+/**
+ * ViewAux class for rating team members
+ */
 class ViewAux extends \CL\Site\ViewAux {
     /** Constructor
      * @param Site $site The Site object
-     * @param string $teamingTag Optional teaming tag
+     * @param string $assignTag Assignment tag
+     * @param string $teamingTag Teaming tag
      */
-    public function __construct(Site $site, User $user, $teamingTag=null) {
+    public function __construct(Site $site, $assignTag, $teamingTag) {
         $this->site = $site;
-//        $this->user = $user;
+        $this->assignTag = $assignTag;
         $this->teamingTag = $teamingTag;
     }
 
@@ -80,7 +85,9 @@ class ViewAux extends \CL\Site\ViewAux {
      */
     public function present() {
         $data = [
-            'teaming' => $this->teamingTag
+            'teaming' => $this->teamingTag,
+            'assignment' => $this->assignTag,
+            'staff' => $this->view->user->atLeast(Member::STAFF)
         ];
 
         $team = null;
@@ -97,11 +104,20 @@ class ViewAux extends \CL\Site\ViewAux {
             }
         }
 
+
+
         /**
          * Add to the data to send to JavaScript
          */
         if($team !== null) {
             $data['team'] = $team->data();
+
+            /*
+             * Get all ratings by this rater
+             */
+            $teamRatings = new TeamRatings($this->site->db);
+            $ratings = $teamRatings->get($team->id, $this->view->user->member->id);
+            $data['ratings'] = $ratings;
         }
 
         /**
@@ -123,7 +139,7 @@ class ViewAux extends \CL\Site\ViewAux {
     }
 
     private $site;
-//    private $user;
+    private $assignTag;
     private $teamingTag;
 
     private $items = [];

@@ -136,9 +136,25 @@ class Team {
 		return $data;
 	}
 
-	private $id;        // Team internal id
-	private $teamingId; // The teaming ID
-	private $name;      // Team name
+    /**
+     * Get a member of a team by the member ID
+     * Only valid once team members have been loaded.
+     * @param $memberId Member ID to search for
+     * @return User|null User object or null if not found
+     */
+    public function getMember($memberId) {
+        foreach($this->members as $user) {
+            if($user->member->id == $memberId) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
+	private $id;            // Team internal id
+	private $teamingId;     // The teaming ID
+	private $name;          // Team name
 
 	private $members = [];  // Team membership
 }

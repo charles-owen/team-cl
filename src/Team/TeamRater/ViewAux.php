@@ -32,6 +32,7 @@ class ViewAux extends \CL\Site\ViewAux {
     {
         parent::install($view);
         $view->addJS('team');
+        $this->assignment = $view->section->get_assignment($this->assignTag);
     }
 
 
@@ -84,9 +85,13 @@ class ViewAux extends \CL\Site\ViewAux {
      * @return string HTML
      */
     public function present() {
+        if($this->assignment === null) {
+            return "<p>Assignment not defined</p>";
+        }
+
         $data = [
             'teaming' => $this->teamingTag,
-            'assignment' => $this->assignTag,
+            'assignment' => $this->assignment->tag,
             'staff' => $this->view->user->atLeast(Member::STAFF)
         ];
 
@@ -140,6 +145,7 @@ class ViewAux extends \CL\Site\ViewAux {
 
     private $site;
     private $assignTag;
+    private $assignment = null;
     private $teamingTag;
 
     private $items = [];

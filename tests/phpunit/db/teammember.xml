@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<test_cl_teammember teamid="7" memberid="23"/>
+	<test_cl_teammember teamid="7" memberid="25"/>
+	<test_cl_teammember teamid="7" memberid="45"/>
+</dataset>

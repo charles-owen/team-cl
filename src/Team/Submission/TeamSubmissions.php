@@ -182,8 +182,11 @@ SQL;
 		$stmt->bindColumn(8, $teamId, \PDO::PARAM_STR);
 		$stmt->fetch(\PDO::FETCH_BOUND);
 
+        $data = fread($bin, 100000000);
+        fclose($bin);
+
 		return array('type' => $type,
-			'binary' => $bin,
+			'binary' => $data,
 			'teamid' => +$teamId,
 			'memberid' => $submissionMember,
 			'assigntag' => $assigntag,

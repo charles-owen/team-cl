@@ -14,7 +14,7 @@
 
           <div v-if="item.type==='multiple-choice'" v-for="choice in item.choices">
             <p class="cl-teamrater-radio"><input type="radio" v-model="values[member.memberid][item.tag]"
-                                                 :id="name(member, item, choice)" :value="choice.code"></input>
+                                                 :id="name(member, item, choice)" :value="choice.code"/>
               <label :for="name(member, item, choice)" v-html="choice.text"></label></p>
           </div>
           <div v-if="item.type==='comment'">

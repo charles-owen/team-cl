@@ -2,8 +2,8 @@
   <div class="content">
     <div class="full cl-teams-editor" v-if="teams !== null">
       <table class="small">
-        <template v-for="team in teams">
-          <tr :key="team.id" class="cl-internal">
+        <template :key="team.id"  v-for="team in teams">
+          <tr class="cl-internal">
             <th class="right"><span v-if="team.name !== null">
               <a @click.prevent="editer(team)"><img :src="root + '/vendor/cl/site/img/pencil16.png'" alt="Edit" title="Edit"></a>
               <a @click.prevent="deleter(team)"><img :src="root + '/vendor/cl/site/img/x.png'" alt="Delete" title="Delete"></a></span>

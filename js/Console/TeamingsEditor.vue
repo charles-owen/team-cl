@@ -32,6 +32,7 @@
   import TeamingEditorVue from './TeamingEditor.vue';
 
   const ConsoleComponentBase = Site.ConsoleComponentBase;
+  const VueHelper = Site.VueHelper
 
   export default {
   	extends: ConsoleComponentBase,
@@ -123,8 +124,7 @@
         });
 
   			// Create a Vue inside the dialog box
-        new this.$site.Vue({
-          el: '#cl-teaming',
+        const app = VueHelper.createApp({
           data: function() {
             return {
               teaming: teaming
@@ -135,6 +135,8 @@
             editor: TeamingEditorVue
           }
         })
+
+        app.mount('#cl-teaming')
       },
       editer(teaming) {
   			teaming = teaming.clone();
@@ -192,8 +194,7 @@
 	      });
 
 	      // Create a Vue inside the dialog box
-	      new this.$site.Vue({
-		      el: '#cl-teaming',
+        const app = VueHelper.createApp({
 		      data: function() {
 			      return {
 				      teaming: teaming
@@ -204,6 +205,8 @@
 			      editor: TeamingEditorVue
 		      }
 	      })
+
+        app.mount('#cl-teaming')
       },
       deleter(teaming) {
 	      new Dialog.MessageBox('Are you sure?', 'Are you sure you want to delete ' + teaming.name,
@@ -280,8 +283,7 @@
         });
 
 	      // Create a Vue inside the dialog box
-	      new this.$site.Vue({
-		      el: '#cl-teaming',
+        const app = VueHelper.createApp({
 		      data: function() {
 			      return {
 				      teaming: copy
@@ -292,6 +294,8 @@
 			      editor: TeamingEditorVue
 		      }
 	      })
+
+        app.mount('#cl-teaming')
       }
     }
   }

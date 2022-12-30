@@ -6,15 +6,17 @@
 import {TeamFactory} from "./js/TeamFactory";
 import {TeamConsole} from './js/Console/TeamConsole';
 
-//
-// Create the team runtime component
-//
-TeamFactory.create(Site.site);
+if(!Site.Team) {
+	//
+	// Create the team runtime component
+	//
+	Site.Team = TeamFactory.create(Site.site);
 
-//
-// Install the console components
-//
-
-if(Site.site.console !== undefined) {
-	TeamConsole.setup(Site.site.console);
+	//
+	// Install the console components
+	//
+	if(Site.Console !== undefined) {
+		TeamConsole.setup(Site.Console);
+	}
 }
+

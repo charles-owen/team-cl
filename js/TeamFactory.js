@@ -12,4 +12,6 @@ TeamFactory.create = function(site) {
 			new TeamRater(site, element);
 		}
 	})
+
+	return true
 }

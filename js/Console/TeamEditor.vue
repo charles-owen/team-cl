@@ -51,3 +51,10 @@
     }
   }
 </script>
+
+<style scoped lang="scss">
+.cl-inline-padded {
+  display: inline-block;
+  padding: 1.5em 0 2em 0;
+}
+</style>

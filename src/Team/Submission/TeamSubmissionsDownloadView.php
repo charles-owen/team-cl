@@ -14,7 +14,7 @@ use CL\Course\Member;
 use CL\Course\Members;
 use CL\Team\Teamings;
 use CL\Team\Teams;
-
+use ZipArchive; //dep
 /**
  * View class for downloading submissions in bulk.
  */
@@ -94,6 +94,8 @@ class TeamSubmissionsDownloadView extends View {
 		mkdir($submissions_dir);
 
 		$cnt = 0;
+		$zip = new ZipArchive();	//dep
+		$zip->open($temp_dir . "/submissions.zip", ZIPARCHIVE::CREATE); //dep
 		foreach ($teams as $team) {
             if(($from !== null && strtolower($team->name) < $from) || ($to !== null && strtolower($team->name) > $to)) {
                 continue;
@@ -116,7 +118,7 @@ class TeamSubmissionsDownloadView extends View {
 				$ext = pathinfo($name, PATHINFO_EXTENSION);
 				$name = $team->name . '.' . $ext;
 				file_put_contents($submissions_dir . "/" . $name, $bin);
-
+				$zip->addFile($submissions_dir . "/" . $name, $name);	//dep
 				$cnt++;
 
 				if($this->limit > 0 && $cnt >= $this->limit) {
@@ -125,16 +127,17 @@ class TeamSubmissionsDownloadView extends View {
 			}
 
 		}
-
+		/* dep
 		error_reporting(E_ERROR | E_PARSE);
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-			$cmd = "cd $temp_dir & zip -r submissions submissions";
+			$cmd = "cd $temp_dir & /usr/local/bin/zip -r submissions submissions";
 		} else {
-			$cmd = "cd $temp_dir; zip -r submissions submissions";
+			$cmd = "cd $temp_dir; /usr/local/bin/zip -r submissions submissions";
 		}
 
 		exec($cmd);
-
+		*/
+		$zip->close();
 		$fp = fopen($temp_dir . "/submissions.zip", 'rb');
 
 		header( "Content-Type: application/zip" );

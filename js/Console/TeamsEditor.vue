@@ -50,15 +50,15 @@
 </template>
 
 <script>
-import TeamEditorVue from './TeamEditor.vue';
-import Dialog from 'dialog-cl';
-import {Team} from '../Team';
-import TeamDistributerVue from './TeamDistributer.vue';
-import TeamNameLoaderVue from './TeamNameLoader.vue';
+import {VueDialog} from 'site-cl/js/Vue/VueDialog'
+import TeamEditorVue from './TeamEditor.vue'
+import Dialog from 'dialog-cl'
+import {Team} from '../Team'
+import TeamDistributerVue from './TeamDistributer.vue'
+import TeamNameLoaderVue from './TeamNameLoader.vue'
 
 const ConsoleComponentBase = Site.ConsoleComponentBase;
-const MenuVue = Site.site.MenuVue;
-const VueDialog = Site.site.VueDialog;
+const MenuVue = Site.MenuVue;
 
 export default {
   extends: ConsoleComponentBase,

@@ -65,6 +65,7 @@ export default {
   props: ['id'],
   data: function () {
     return {
+      teaming: null,
       teams: null,
       open: []
     }
@@ -95,19 +96,23 @@ export default {
     clMenu: MenuVue
   },
   mounted() {
-    this.addNav2Link('Teamings', 3, '/cl/console/teams');
+    this.addNav2Link('Teamings', 3, '/cl/console/teams')
 
     this.addNav2('Add Team', 5, () => {
-      this.add();
-    });
+      this.add()
+    })
 
     this.addNav2('Load Names', 6, () => {
-      this.loadNames();
-    });
+      this.loadNames()
+    })
 
     this.addNav2('Expand All', 7, () => {
-      this.expandAll();
-    });
+      this.expandAll()
+    })
+
+    this.addNav2('Export', 8, () => {
+      this.export()
+    })
 
     this.$site.api.get('/api/team/teams/' + this.id, {})
         .then((response) => {
@@ -124,7 +129,8 @@ export default {
   },
   methods: {
     take(response) {
-      let teams = response.getData('teams').attributes;
+      this.teaming = response.getData('teaming').attributes
+      let teams = response.getData('teams').attributes
 
       this.teams = [];
       for (let team of teams) {
@@ -243,7 +249,7 @@ export default {
     },
     expandAll() {
       for (let team of this.teams) {
-        this.$set(this.open, team.id, true);
+        this.open[team.id] = true
       }
     },
     teamHeading(team) {
@@ -263,6 +269,28 @@ export default {
       }
 
       return `${team.name} <a class="cl-email" href="mailto:${email}">email</a>`;
+    },
+    /**
+     * Export the teams to CSV file
+     */
+    export() {
+      let csvContent = "data:text/csv;charset=utf-8,"
+      csvContent += "Team,ID,email,name\r\n"
+
+      for(const team of this.teams) {
+        for(const member of team.members) {
+          csvContent += team.name + "," + member.user + "," + member.email + ",\"" + member.name + "\"\r\n"
+        }
+      }
+
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", this.teaming.tag + ".csv");
+      document.body.appendChild(link); // Required for FF
+
+      link.click();
+
     }
   }
 }

@@ -357,6 +357,7 @@ class TeamApi extends \CL\Course\Api\Resource {
 		}
 
 		$json = new JsonAPI();
+        $json->addData('teaming', $teamingId, $teaming->data());
 		$json->addData('teams', $teamingId, $allData);
 		return $json;
 	}

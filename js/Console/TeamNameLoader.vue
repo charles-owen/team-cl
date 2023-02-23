@@ -1,5 +1,5 @@
 <template>
-  <div class="cl-center-in">
+  <div>
     <form class="cl-inline-padded" @submit.prevent="submit()">
       <p><label>Team Names<br>
         <textarea ref="names" v-model="names" rows="15"></textarea>
@@ -66,3 +66,14 @@
     }
   }
 </script>
+
+<style scoped lang="scss">
+textarea {
+  width: 100%;
+}
+
+form>p {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+</style>

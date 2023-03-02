@@ -10,7 +10,7 @@ if(!Site.Team) {
 	//
 	// Create the team runtime component
 	//
-	Site.Team = TeamFactory.create(Site.site);
+	Site.Team = TeamFactory.create(Site);
 
 	//
 	// Install the console components

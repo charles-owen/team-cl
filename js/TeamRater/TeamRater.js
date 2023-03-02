@@ -1,6 +1,8 @@
 import TeamRaterVue from './TeamRaterVue.vue'
 
 export const TeamRater = function(site, element) {
+    const VueHelper = site.VueHelper
+
     const json = JSON.parse(element.textContent);
 
     element.innerHTML = ''
@@ -12,13 +14,17 @@ export const TeamRater = function(site, element) {
         'team-rater': TeamRaterVue
     }
 
-    new Site.Vue({
-        el: element,
+    const app = VueHelper.createApp({
         site,
-        data: {
-            json: json
+        data: function() {
+            return {
+                json: json
+            }
         },
         template: template,
         components: components
     })
+
+    app.config.globalProperties.$site = site
+    VueHelper.mount(app, element)
 }

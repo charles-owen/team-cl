@@ -48,14 +48,17 @@ export default {
     }
   },
   created() {
+    console.log(this.json)
     if(this.json.team !== undefined) {
       for(const member of this.json.team.members) {
         // Create an object for this member
-        this.$set(this.values, member.memberid, {});
+        this.values[member.memberid] = {}
+        //this.$set(this.values, member.memberid, {});
         let memberData = this.values[member.memberid];
 
         for(const item of this.json.items) {
-          this.$set(memberData, item.tag, item.type === 'comment' ? '' : null);
+          memberData[item.tag] = item.type === 'comment' ? '' : null
+          //this.$set(memberData, item.tag, item.type === 'comment' ? '' : null);
         }
       }
 

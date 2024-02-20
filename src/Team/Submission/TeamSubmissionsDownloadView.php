@@ -107,7 +107,8 @@ class TeamSubmissionsDownloadView extends View {
 			if (count($submits) > 0) {
 				$submit = $submits[0];
 				if($this->submission instanceof SubmissionText) {
-					$bin = $submissions->get_text($submit['id']);
+					$file = $submissions->get_text($submit['id']);
+                    $bin = $file['text'];
 					$name = 'submit.txt';
 				} else {
 					$file = $submissions->get_file($submit['id']);
